@@ -1,0 +1,102 @@
+﻿<Page x:Class="WpfAppProject.Search"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfAppProject"
+      xmlns:command="clr-namespace:WpfAppProject.Comands"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Поиск">
+
+    <Page.CommandBindings>
+        <CommandBinding Command="Undo" Executed="Undo_Executed" CanExecute="Undo_CanExecute"></CommandBinding>
+        <CommandBinding Command="{x:Static command:DataCommands.Edit}" Executed="Edit_Executed" CanExecute="Edit_CanExecuted"></CommandBinding>
+        <CommandBinding Command="New" Executed="New_Executed" CanExecute="New_CanExecuted"></CommandBinding>
+        <CommandBinding Command="Save" Executed="Save_Executed" CanExecute="Save_CanExecuted"></CommandBinding>
+        <CommandBinding Command="Find" Executed="Find_Executed" CanExecute="Find_CanExecuted"></CommandBinding>
+        <CommandBinding Command="{x:Static command:DataCommands.Delete}" Executed="Delete_Executed" CanExecute="Delete_CanExecuted"></CommandBinding>
+    </Page.CommandBindings>
+    <Grid Background="#FFFCAE98">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600*"/>
+            <ColumnDefinition Width="300*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="38*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="135*"/>
+            <RowDefinition Height="183*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.ColumnSpan="2" Grid.Row="0" Height="24">
+            <MenuItem Header="Действие" BorderThickness="3">
+                <MenuItem Header="Отменить" Command="Undo" ></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Создать" Command="New"></MenuItem>
+                <MenuItem Header="Редактировать" Command="{x:Static command:DataCommands.Edit}"></MenuItem>
+                <MenuItem Header="Сохранить" Command="Save"></MenuItem>
+                <MenuItem Header="Найти" Command="Find"/>
+                <Separator></Separator>
+                <MenuItem Header="Удалить" Command="{x:Static command:DataCommands.Delete}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Отчет"></MenuItem>
+        </Menu>
+
+        <ToolBar Name="ToolBar1" Margin="3,3,3,3" Grid.ColumnSpan="2" Grid.Row="1" Height="30">
+            <Button Name="Undo" Margin="5,2,5,2"  Command="Undo" ToolTip="Отменить">
+                <Image Source="Images/Undo.png"></Image>
+            </Button>
+            <Button Name="Add" Margin="5,2,5,2" Command="New" ToolTip="Добавить">
+                <Image Source="Images/Add.png"></Image>
+            </Button>
+            <Button Name="Edit" Margin="5,2,5,2" Command="{x:Static command:DataCommands.Edit}" ToolTip="Редактировать">
+                <Image Source="Images/Edit.png"></Image>
+            </Button>
+            <Button Name="Find" Margin="5,2,5,2" Command="Find" ToolTip="Поиск">
+                <Image Source="Images/Find.png"></Image>
+            </Button>
+            <Button Name="Save" Margin="5,2,5,2" Command="Save" ToolTip="Сохранить">
+                <Image Source="Images/Save.png"></Image>
+            </Button>
+            <Button Name="Delete" Margin="5,2,5,2" Command="{x:Static command:DataCommands.Delete}" ToolTip="Удалить">
+                <Image Source="Images/Delete.png"></Image>
+            </Button>
+        </ToolBar>
+
+        <TextBlock Margin="5,0,0,5" FontSize="20" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="27" Width="159">Список рецептов</TextBlock>
+
+        <DataGrid Grid.Row="3"  Name="DataGridRecipes" Cursor="Hand" ItemsSource="{Binding Cooking_Recipes}" 
+            IsReadOnly="True" Height="Auto" Width="Auto" BorderThickness="4" AutoGenerateColumns="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название" Binding="{Binding Name, Mode=TwoWay}" />
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description, Mode=TwoWay}"/>
+                <DataGridTextColumn Header="Ингредиенты" Binding="{Binding Ingridients, Mode=TwoWay}" />
+                <DataGridTextColumn Header="Шаги приготовления" Binding="{Binding Recipe , Mode=TwoWay}"/>
+                <DataGridTextColumn  Header="Автор" Binding="{Binding Path=User.Username , Mode=TwoWay}"/>
+                <!--<DataGridTextColumn  Header="Дата создания" Binding="{Binding Date_of_Creation ,StringFormat='yyyy-MM-dd'}"/>-->
+                <DataGridTemplateColumn Header="Дата создания">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Date_of_Creation, StringFormat='yyyy-mm-dd'}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date_of_Creation, Mode=TwoWay, StringFormat='yyyy-mm-dd'}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Label Grid.Row="3" Content="Поиск" HorizontalAlignment="Left" FontSize="20" VerticalAlignment="Top" Height="38" Width="66" Grid.Column="1" Margin="131,0,0,0"/>
+        <TextBlock Name="TextBlockRecipe" Text="Блюдо" FontSize="15" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="45" Height="20" Grid.Row="3" Grid.Column="1" Margin="8,44,0,0" />
+        <TextBlock Name="TextBlockAuthor" Text="Автор" FontSize="15" HorizontalAlignment="Left" Width="41" VerticalAlignment="Bottom" Height="20" Grid.Row="3" Grid.Column="1" Margin="8,0,0,60" />
+        <TextBox x:Name="TextBoxRecipe" Width="200"  Height="24" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="1" Margin="60,40,0,0"/>
+        <ComboBox Name="ComboBoxAuthor" Width="200" Height="22" Grid.Row="3" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="60,0,0,60"/>
+        <Button x:Name="Find_Button" Content="Поиск" Grid.Row="3" Grid.Column="1" Width="200" Height="24" VerticalAlignment="Bottom" Margin="60,114,0,10" HorizontalAlignment="Left" Click="Find_Button_Click"/>
+
+    </Grid>
+</Page>

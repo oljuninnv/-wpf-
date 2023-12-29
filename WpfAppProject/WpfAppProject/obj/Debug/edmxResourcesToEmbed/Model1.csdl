@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RecipesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Cooking_Recipes">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Recipe" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Creator" Type="Int32" Nullable="false" />
+    <Property Name="Date_of_Creation" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Cooking_Recipes_User" FromRole="Cooking_Recipes" ToRole="User" />
+    <NavigationProperty Name="Favourites" Relationship="Self.FK_Favourites_Cooking_Recipes" FromRole="Cooking_Recipes" ToRole="Favourites" />
+    <NavigationProperty Name="Recipes_Ingridients" Relationship="Self.FK_Recipes_Ingridients_Cooking_Recipes" FromRole="Cooking_Recipes" ToRole="Recipes_Ingridients" />
+  </EntityType>
+  <EntityType Name="Favourites">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="User_ID" Type="Int32" />
+    <Property Name="Recipes_ID" Type="Int32" />
+    <NavigationProperty Name="Cooking_Recipes" Relationship="Self.FK_Favourites_Cooking_Recipes" FromRole="Favourites" ToRole="Cooking_Recipes" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Favourites_User" FromRole="Favourites" ToRole="User" />
+  </EntityType>
+  <EntityType Name="Ingridients">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Recipes_Ingridients" Relationship="Self.FK_Recipes_Ingridients_Ingridients" FromRole="Ingridients" ToRole="Recipes_Ingridients" />
+  </EntityType>
+  <EntityType Name="Recipes_Ingridients">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ID_Recipes" Type="Int32" />
+    <Property Name="ID_Ingredients" Type="Int32" />
+    <Property Name="Count" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Cooking_Recipes" Relationship="Self.FK_Recipes_Ingridients_Cooking_Recipes" FromRole="Recipes_Ingridients" ToRole="Cooking_Recipes" />
+    <NavigationProperty Name="Ingridients" Relationship="Self.FK_Recipes_Ingridients_Ingridients" FromRole="Recipes_Ingridients" ToRole="Ingridients" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Cooking_Recipes" Relationship="Self.FK_Cooking_Recipes_User" FromRole="User" ToRole="Cooking_Recipes" />
+    <NavigationProperty Name="Favourites" Relationship="Self.FK_Favourites_User" FromRole="User" ToRole="Favourites" />
+  </EntityType>
+  <Association Name="FK_Cooking_Recipes_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="Cooking_Recipes" Type="Self.Cooking_Recipes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Cooking_Recipes">
+        <PropertyRef Name="Creator" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Favourites_Cooking_Recipes">
+    <End Role="Cooking_Recipes" Type="Self.Cooking_Recipes" Multiplicity="0..1" />
+    <End Role="Favourites" Type="Self.Favourites" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cooking_Recipes">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Favourites">
+        <PropertyRef Name="Recipes_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Recipes_Ingridients_Cooking_Recipes">
+    <End Role="Cooking_Recipes" Type="Self.Cooking_Recipes" Multiplicity="0..1" />
+    <End Role="Recipes_Ingridients" Type="Self.Recipes_Ingridients" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cooking_Recipes">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Recipes_Ingridients">
+        <PropertyRef Name="ID_Recipes" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Favourites_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Favourites" Type="Self.Favourites" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Favourites">
+        <PropertyRef Name="User_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Recipes_Ingridients_Ingridients">
+    <End Role="Ingridients" Type="Self.Ingridients" Multiplicity="0..1" />
+    <End Role="Recipes_Ingridients" Type="Self.Recipes_Ingridients" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ingridients">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Recipes_Ingridients">
+        <PropertyRef Name="ID_Ingredients" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RecipesEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cooking_Recipes" EntityType="Self.Cooking_Recipes" />
+    <EntitySet Name="Favourites" EntityType="Self.Favourites" />
+    <EntitySet Name="Ingridients" EntityType="Self.Ingridients" />
+    <EntitySet Name="Recipes_Ingridients" EntityType="Self.Recipes_Ingridients" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="User" EntityType="Self.User" />
+    <AssociationSet Name="FK_Cooking_Recipes_User" Association="Self.FK_Cooking_Recipes_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Cooking_Recipes" EntitySet="Cooking_Recipes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Favourites_Cooking_Recipes" Association="Self.FK_Favourites_Cooking_Recipes">
+      <End Role="Cooking_Recipes" EntitySet="Cooking_Recipes" />
+      <End Role="Favourites" EntitySet="Favourites" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Recipes_Ingridients_Cooking_Recipes" Association="Self.FK_Recipes_Ingridients_Cooking_Recipes">
+      <End Role="Cooking_Recipes" EntitySet="Cooking_Recipes" />
+      <End Role="Recipes_Ingridients" EntitySet="Recipes_Ingridients" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Favourites_User" Association="Self.FK_Favourites_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Favourites" EntitySet="Favourites" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Recipes_Ingridients_Ingridients" Association="Self.FK_Recipes_Ingridients_Ingridients">
+      <End Role="Ingridients" EntitySet="Ingridients" />
+      <End Role="Recipes_Ingridients" EntitySet="Recipes_Ingridients" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
